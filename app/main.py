@@ -19,8 +19,8 @@ def get_jobs():
         country_indeed='Canada',
         linkedin_fetch_description=True,
     )
-    
-    return jsonify(jobs)
+
+    return jobs
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
