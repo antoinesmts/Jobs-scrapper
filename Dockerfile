@@ -4,6 +4,12 @@ FROM python:3.13-slim
 # Définir le répertoire de travail
 WORKDIR /app
 
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    gcc \
+    g++ \
+    && rm -rf /var/lib/apt/lists/*
+
 # Copier les fichiers nécessaires dans l'image
 COPY app/requirements.txt requirements.txt
 COPY app/main.py main.py
