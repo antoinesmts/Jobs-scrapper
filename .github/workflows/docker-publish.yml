@@ -1,0 +1,53 @@
+name: Create and Push Docker Image
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+    
+env:
+  # Définissez le registre utilisé pour Docker (GitHub Container Registry par défaut)
+  REGISTRY: ghcr.io
+  # Nom de l'image basé sur le dépôt GitHub : <account>/<repo>
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read        # Autorisations pour lire le contenu du dépôt
+      packages: write       # Autorisations pour écrire dans les packages (pour le registre)
+      id-token: write       # Autorisations pour le défi d'identité avec Sigstore
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2  # Utilisez une version d'action stable
+  
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1  # Utilisez la version stable v1
+  
+      - name: Log into registry ${{ env.REGISTRY }}
+        if: github.event_name != 'pull_request'  # Ne pas se connecter lors des PR
+        uses: docker/login-action@v1  # Utilisez la version stable v1
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}  # Utiliser le secret GITHUB_TOKEN
+  
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v4  # Utilisez la version stable v4
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+  
+      - name: Build and push Docker image
+        id: build-and-push
+        uses: docker/build-push-action@v2  # Utilisez la version stable v2
+        with:
+          context: .  # Répertoire contextuel de construction
+          push: ${{ github.event_name != 'pull_request' }}  # Ne pas pousser lors des PR
+          tags: ${{ steps.meta.outputs.tags }}  # Tags extraits
+          labels: ${{ steps.meta.outputs.labels }}  # Labels extraits
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
