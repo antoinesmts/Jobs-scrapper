@@ -6,7 +6,7 @@ WORKDIR /app
 
 # Copier les fichiers nécessaires dans l'image
 COPY requirements.txt requirements.txt
-COPY app.py app.py
+COPY main.py main.py
 
 # Installer les dépendances
 RUN pip install --no-cache-dir -r requirements.txt
@@ -15,4 +15,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 EXPOSE 5000
 
 # Commande pour exécuter l'application
-CMD ["python", "app.py"]
+CMD ["python", "main.py"]
