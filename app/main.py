@@ -1,6 +1,7 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request
 from jobspy import scrape_jobs
 from datetime import datetime
+import pandas as pd
 
 app = Flask(__name__)
 
@@ -20,7 +21,7 @@ def get_jobs():
         linkedin_fetch_description=True,
     )
 
-    return jobs
+    return jobs.to_json()
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
