@@ -5,8 +5,8 @@ FROM python:3.9-slim
 WORKDIR /app
 
 # Copier les fichiers nécessaires dans l'image
-COPY requirements.txt requirements.txt
-COPY main.py main.py
+COPY app/requirements.txt requirements.txt
+COPY app/main.py main.py
 
 # Installer les dépendances
 RUN pip install --no-cache-dir -r requirements.txt
