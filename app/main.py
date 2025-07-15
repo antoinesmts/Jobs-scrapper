@@ -19,11 +19,7 @@ def get_jobs():
         country_indeed='Canada',
         linkedin_fetch_description=True,
     )
-
-    for job in jobs:
-        if not job.get('date_posted'):
-            job['date_posted'] = datetime.now().strftime('%Y-%m-%d')
-
+    
     return jsonify(jobs)
 
 if __name__ == '__main__':
